@@ -1,0 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  role        Role     @default(USER)
+  microsoftId String?  @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([email])
+}
+
+model Map {
+  id        String     @id @default(uuid())
+  name      String
+  state     String
+  city      String
+  building  String
+  floor     String
+  imageUrl  String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  locations Location[]
+
+  @@index([state, city, building])
+}
+
+model Employee {
+  id         String     @id @default(uuid())
+  name       String
+  phone      String
+  email      String     @unique
+  pictureUrl String?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  locations  Location[]
+
+  @@index([name])
+  @@index([email])
+}
+
+model Location {
+  id         String   @id @default(uuid())
+  mapId      String
+  employeeId String
+  x          Float // 0.0 to 1.0 normalized coordinate
+  y          Float // 0.0 to 1.0 normalized coordinate
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  map      Map      @relation(fields: [mapId], references: [id], onDelete: Cascade)
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([mapId])
+  @@index([employeeId])
+}
+
+enum Role {
+  USER
+  ADMIN
+}

@@ -1,11 +1,18 @@
 import { Request } from 'express';
 
+// Extend Express Request type
+declare global {
+  namespace Express {
+    interface User {
+      id: string;
+      email: string;
+      role: 'USER' | 'ADMIN';
+    }
+  }
+}
+
 export interface AuthenticatedRequest extends Request {
-  user?: {
-    id: string;
-    email: string;
-    role: 'USER' | 'ADMIN';
-  };
+  user?: Express.User;
 }
 
 export interface SearchQuery {
@@ -30,6 +37,7 @@ export interface UpdateMapDto {
   city?: string;
   building?: string;
   floor?: string;
+  imageUrl?: string;
 }
 
 export interface CreateEmployeeDto {

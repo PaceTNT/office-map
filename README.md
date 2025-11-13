@@ -137,11 +137,8 @@ NODE_ENV=development
 JWT_SECRET=your-secret-key-change-in-production
 DISABLE_AUTH=true  # Set to false for production
 
-# Microsoft SSO (for production)
-AZURE_AD_CLIENT_ID=
-AZURE_AD_CLIENT_SECRET=
-AZURE_AD_TENANT_ID=
-AZURE_AD_REDIRECT_URI=http://localhost:3000/api/auth/callback
+# Note: Microsoft SSO integration will be added in a future update
+# For now, authentication is disabled by default for development
 
 # File Upload
 UPLOAD_DIR=../uploads
@@ -157,10 +154,10 @@ By default, authentication is disabled in development mode (`DISABLE_AUTH=true`)
 ### Deployment Checklist
 
 1. **Set environment variables:**
-   - Set `DISABLE_AUTH=false`
-   - Configure Microsoft SSO credentials
+   - Set `DISABLE_AUTH=false` (or implement custom authentication)
    - Set secure `JWT_SECRET`
    - Configure production database URL
+   - Note: SSO integration (Microsoft, Google, etc.) can be added based on your needs
 
 2. **Build the application:**
    ```bash
@@ -187,7 +184,7 @@ By default, authentication is disabled in development mode (`DISABLE_AUTH=true`)
 
 ### Recommended Deployment Options
 
-**Option 1: Azure (Best for Microsoft SSO)**
+**Option 1: Azure**
 - Frontend: Azure Static Web Apps
 - Backend: Azure App Service
 - Database: Azure Database for PostgreSQL

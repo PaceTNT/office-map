@@ -39,6 +39,8 @@ const MapViewer = ({ map, isAdmin = false, onLocationClick }: MapViewerProps) =>
         minScale={0.5}
         maxScale={4}
         centerOnInit
+        panning={{ disabled: isAdmin }}
+        doubleClick={{ disabled: isAdmin }}
       >
         {({ zoomIn, zoomOut, resetTransform }) => (
           <>

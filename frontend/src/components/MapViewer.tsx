@@ -90,14 +90,28 @@ const MapViewer = ({ map, isAdmin = false, onLocationClick }: MapViewerProps) =>
               wrapperClass="!w-full !h-full"
               contentClass="!w-full !h-full"
             >
-              <div className="relative w-full h-full flex items-center justify-center">
-                <div className="relative inline-block">
+              <div
+                className="relative w-full h-full flex items-center justify-center"
+                onClick={(e) => {
+                  console.log('Outer div clicked!');
+                  if (isAdmin && e.target === e.currentTarget) {
+                    console.log('Click was on outer div, not propagated from child');
+                  }
+                }}
+              >
+                <div
+                  className="relative inline-block"
+                  onClick={(e) => {
+                    console.log('Inner div clicked!');
+                  }}
+                >
                   <img
                     ref={imageRef}
                     src={map.imageUrl}
                     alt={map.name}
                     className={`max-w-full max-h-screen ${isAdmin ? 'cursor-crosshair' : ''}`}
                     onClick={handleImageClick}
+                    onMouseDown={(e) => console.log('Image mousedown!')}
                   />
 
                   {/* Employee markers */}

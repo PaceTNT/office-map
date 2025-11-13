@@ -14,8 +14,16 @@ const MapViewer = ({ map, isAdmin = false, onLocationClick }: MapViewerProps) =>
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const imageRef = useRef<HTMLImageElement>(null);
 
+  // Debug logging
+  console.log('MapViewer rendered:', { isAdmin, hasOnLocationClick: !!onLocationClick });
+
   const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => {
-    if (!isAdmin || !onLocationClick || !imageRef.current) return;
+    console.log('Image clicked!', { isAdmin, hasCallback: !!onLocationClick, hasRef: !!imageRef.current });
+
+    if (!isAdmin || !onLocationClick || !imageRef.current) {
+      console.log('Click ignored:', { isAdmin, hasCallback: !!onLocationClick, hasRef: !!imageRef.current });
+      return;
+    }
 
     const rect = imageRef.current.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width;
@@ -25,6 +33,7 @@ const MapViewer = ({ map, isAdmin = false, onLocationClick }: MapViewerProps) =>
     const normalizedX = Math.max(0, Math.min(1, x));
     const normalizedY = Math.max(0, Math.min(1, y));
 
+    console.log('Calling onLocationClick with:', { normalizedX, normalizedY });
     onLocationClick(normalizedX, normalizedY);
   };
 
@@ -34,6 +43,16 @@ const MapViewer = ({ map, isAdmin = false, onLocationClick }: MapViewerProps) =>
 
   return (
     <div className="relative w-full h-full bg-gray-100">
+      {/* Debug info when in admin mode */}
+      {isAdmin && (
+        <div className="absolute top-4 left-4 z-10 bg-yellow-100 border-2 border-yellow-400 p-3 rounded text-sm">
+          <div className="font-bold mb-1">🐛 Debug Mode</div>
+          <div>Admin Mode: {isAdmin ? '✅' : '❌'}</div>
+          <div>Has Callback: {onLocationClick ? '✅' : '❌'}</div>
+          <div className="text-xs mt-2 text-gray-600">Click on the map below to set location</div>
+        </div>
+      )}
+
       <TransformWrapper
         initialScale={1}
         minScale={0.5}

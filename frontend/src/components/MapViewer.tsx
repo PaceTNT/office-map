@@ -17,13 +17,16 @@ const MapViewer = ({ map, isAdmin = false, onLocationClick }: MapViewerProps) =>
   // Debug logging
   console.log('MapViewer rendered:', { isAdmin, hasOnLocationClick: !!onLocationClick });
 
-  const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => {
-    console.log('Image clicked!', { isAdmin, hasCallback: !!onLocationClick, hasRef: !!imageRef.current });
+  const handleImageClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    console.log('Handler called!', { isAdmin, hasCallback: !!onLocationClick, hasRef: !!imageRef.current });
 
     if (!isAdmin || !onLocationClick || !imageRef.current) {
       console.log('Click ignored:', { isAdmin, hasCallback: !!onLocationClick, hasRef: !!imageRef.current });
       return;
     }
+
+    // Stop event propagation
+    e.stopPropagation();
 
     const rect = imageRef.current.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width;
@@ -90,28 +93,16 @@ const MapViewer = ({ map, isAdmin = false, onLocationClick }: MapViewerProps) =>
               wrapperClass="!w-full !h-full"
               contentClass="!w-full !h-full"
             >
-              <div
-                className="relative w-full h-full flex items-center justify-center"
-                onClick={(e) => {
-                  console.log('Outer div clicked!');
-                  if (isAdmin && e.target === e.currentTarget) {
-                    console.log('Click was on outer div, not propagated from child');
-                  }
-                }}
-              >
+              <div className="relative w-full h-full flex items-center justify-center">
                 <div
-                  className="relative inline-block"
-                  onClick={(e) => {
-                    console.log('Inner div clicked!');
-                  }}
+                  className={`relative inline-block ${isAdmin ? 'cursor-crosshair' : ''}`}
+                  onClick={isAdmin ? handleImageClick : undefined}
                 >
                   <img
                     ref={imageRef}
                     src={map.imageUrl}
                     alt={map.name}
-                    className={`max-w-full max-h-screen ${isAdmin ? 'cursor-crosshair' : ''}`}
-                    onClick={handleImageClick}
-                    onMouseDown={(e) => console.log('Image mousedown!')}
+                    className="max-w-full max-h-screen"
                   />
 
                   {/* Employee markers */}
